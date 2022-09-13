@@ -53,10 +53,19 @@ endif()
 if(RYML_BUILD_API_PYTHON)
     c4_log("enabling python3 API")
     set(Python3_FIND_VIRTUALENV "FIRST")
-    # use Development.Module to ensure this works with cibuildwheel:
-    # https://github.com/pypa/cibuildwheel/issues/639
-    find_package(Python3 COMPONENTS Interpreter Development.Module REQUIRED)
-    c4_log("found python ${Python3_VERSION}: ${Python3_EXECUTABLE}")
+    if(APPLE)
+        find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
+    else()
+        # use Development.Module to ensure this works with cibuildwheel:
+        # https://github.com/pypa/cibuildwheel/issues/639
+        find_package(Python3 COMPONENTS Interpreter Development.Module REQUIRED)
+    endif()
+    c4_log("found python:
+    ver=${Python3_VERSION}
+    exe=${Python3_EXECUTABLE}
+    lib=${Python3_LIBRARIES}
+    inc=${Python3_INCLUDE_DIRS}
+")
     #
     set(t ryml-api-python3) # the target name
     set(g ${CMAKE_CURRENT_BINARY_DIR}/src/python3) # where to put c++ generated srcs

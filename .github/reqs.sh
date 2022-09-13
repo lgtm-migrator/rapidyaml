@@ -180,6 +180,7 @@ function _c4_gather_compilers()
 {
     cxx=$1
     case $cxx in
+        g++-12     ) _c4_addgcc 12 ;;
         g++-11     ) _c4_addgcc 11 ;;
         g++-10     ) _c4_addgcc 10 ;;
         g++-9      ) _c4_addgcc 9  ;;
@@ -189,6 +190,8 @@ function _c4_gather_compilers()
         g++-5      ) _c4_addgcc 5  ;;
         g++-4.8    ) _c4_addgcc 4.8 ;;
         #g++-4.9    ) _c4_addgcc 4.9 ;;  # https://askubuntu.com/questions/1036108/install-gcc-4-9-at-ubuntu-18-04
+        clang++-14 ) _c4_addclang 14  ;;
+        clang++-13 ) _c4_addclang 13  ;;
         clang++-12 ) _c4_addclang 12  ;;
         clang++-11 ) _c4_addclang 11  ;;
         clang++-10 ) _c4_addclang 10  ;;
@@ -200,7 +203,7 @@ function _c4_gather_compilers()
         clang++-4.0) _c4_addclang 4.0 ;;
         clang++-3.9) _c4_addclang 3.9 ;;
         all)
-            all="g++-11 g++-10 g++-9 g++-8 g++-7 g++-6 g++-5 clang++-12 clang++-11 clang++-10 clang++-9 clang++-8 clang++-7 clang++-6.0 clang++-5.0 clang++-4.0 clang++-3.9"
+            all="g++-12 g++-11 g++-10 g++-9 g++-8 g++-7 g++-6 g++-5 clang++-14 clang++-13 clang++-12 clang++-11 clang++-10 clang++-9 clang++-8 clang++-7 clang++-6.0 clang++-5.0 clang++-4.0 clang++-3.9"
             echo "installing all compilers: $all"
             for cxx in $all ; do
                 _c4_gather_compilers $cxx
@@ -242,9 +245,10 @@ function _c4_addclang()
     clversion=$1
     case $clversion in
         # in 18.04, clang9 and later require PPAs
-        9 | 10 | 11 | 12 )
+        9 | 10 | 11 | 12 | 13 | 14)
             _add_apt clang-$clversion "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-$clversion main"
             # libstdc++ is required
+            _c4_addgcc 12
             _c4_addgcc 11
             _c4_addgcc 10
             _c4_addgcc 9
